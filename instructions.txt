@@ -1,0 +1,216 @@
+==============================================================
+  MICA VIDEO — How to create feature showcase videos
+==============================================================
+
+This project uses Remotion (React-based video framework) to
+create social media videos showcasing Mica features. You don't
+need to know React — an AI agent (Claude Code) can build the
+video for you.
+
+
+--------------------------------------------------------------
+1. SETUP (first time only)
+--------------------------------------------------------------
+
+  a) Install nvm (Node Version Manager) if you don't have it:
+
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+
+    Then restart your terminal, or run:
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+  b) Install and use Node 22 (LTS):
+
+    nvm install 22
+    nvm use 22
+
+    Verify:
+    node -v   # should show v22.x.x
+    npm -v    # should show 10.x.x (comes with Node)
+
+  c) Install project dependencies:
+
+    cd my-video
+    npm install
+
+  d) Install Remotion AI skills (so the agent writes better code):
+
+    npx skills add remotion-dev/skills
+
+
+--------------------------------------------------------------
+2. PREPARE YOUR SCREENSHOTS
+--------------------------------------------------------------
+
+Before asking the agent to build a video, take screenshots of
+the feature you want to showcase:
+
+  - Take mobile screenshots from your phone or browser devtools
+  - Take desktop screenshots from a full browser window
+  - Save them anywhere accessible (Desktop, Downloads, etc.)
+  - The agent will copy them into the public/ folder for you
+
+Tips:
+  - Clean up notifications/tabs before screenshotting
+  - Use staging or demo data with realistic names
+  - Capture the full flow: before → action → result
+
+
+--------------------------------------------------------------
+3. TELL THE AGENT WHAT YOU WANT
+--------------------------------------------------------------
+
+Start Claude Code in the my-video folder and paste your
+screenshots. Here's a template you can adapt:
+
+  -------------------------------------------------------
+  I want to create a social media video showcasing
+  [FEATURE NAME] for Mica.
+
+  Here are screenshots of the flow:
+  [paste/attach screenshots]
+
+  - Image 1: [describe what it shows]
+  - Image 2: [describe what it shows]
+  - ...
+
+  I want:
+  - Format: [vertical for TikTok/Reels | horizontal for
+    YouTube/LinkedIn | square for Instagram]
+  - Language: Spanish
+  - Mobile screenshots should be inside a phone frame
+  - Desktop screenshots should be inside a browser frame
+  - [any other preferences: music, text style, etc.]
+  -------------------------------------------------------
+
+The agent will:
+  1. Copy your screenshots to public/
+  2. Create the video components in src/
+  3. Register the composition in src/Root.tsx
+
+
+--------------------------------------------------------------
+4. PREVIEW YOUR VIDEO
+--------------------------------------------------------------
+
+  # Launch Remotion Studio (opens on http://localhost:3003)
+  npm run dev
+
+  - Pick your composition from the left sidebar
+  - Use the timeline at the bottom to scrub through scenes
+  - Click Play to watch the full video
+
+
+--------------------------------------------------------------
+5. ITERATE WITH THE AGENT
+--------------------------------------------------------------
+
+Watch the preview and ask the agent to adjust:
+
+  - "The cursor is clicking too high, move it down"
+  - "Make the text scene longer, it goes too fast"
+  - "Add a transition between scenes"
+  - "Change the subtitle on scene 3"
+  - "The phone is cutting the header, fix the frame"
+  - "Add a zoom-in effect on the button"
+
+The agent will edit the source files. Remotion Studio
+hot-reloads so changes appear instantly.
+
+
+--------------------------------------------------------------
+6. EXPORT THE FINAL VIDEO
+--------------------------------------------------------------
+
+  # Render to MP4
+  npx remotion render <CompositionId> out/<filename>.mp4
+
+  # Higher quality (lower CRF = bigger file, better quality)
+  npx remotion render <CompositionId> out/<filename>.mp4 --crf 15
+
+  # Render as GIF
+  npx remotion render <CompositionId> out/<filename>.gif --codec gif
+
+  Examples:
+    npx remotion render MicaMobile out/mobile.mp4
+    npx remotion render MicaDesktop out/desktop.mp4
+
+  The output file will be in the out/ folder.
+
+
+--------------------------------------------------------------
+7. HOW SCENES WORK (for advanced users)
+--------------------------------------------------------------
+
+Each video is a React component made of Sequences (scenes).
+You don't need to write code, but understanding the structure
+helps when talking to the agent.
+
+  COMPOSITION (Root.tsx)
+  └── Your video component
+      ├── Sequence (from=0, duration=90)     → Intro
+      ├── Sequence (from=90, duration=45)    → Text: "Step 1"
+      ├── Sequence (from=135, duration=105)  → Phone with screenshot
+      ├── Sequence (from=240, duration=45)   → Text: "Step 2"
+      ├── Sequence (from=285, duration=105)  → Phone with screenshot
+      └── Sequence (from=390, duration=90)   → Outro
+
+  Key concepts:
+  - fps=30 means 30 frames = 1 second
+  - duration=90 frames = 3 seconds
+  - "from" is the frame where the scene starts
+  - Scenes can overlap (for transitions)
+
+  Common scene types:
+  - TextScene     → Title + subtitle centered on screen
+  - PhoneScene    → Screenshot inside a phone frame
+  - BrowserScene  → Screenshot inside a browser frame
+  - MixedScene    → Browser + Phone side by side
+  - Intro/Outro   → Mica branding
+
+  Device frames:
+  - PhoneFrame    → Wraps content in a phone mockup
+  - BrowserFrame  → Wraps content in a macOS browser mockup
+
+  Animations:
+  - spring()      → Bouncy entrance animations
+  - interpolate() → Smooth value transitions (opacity, position)
+  - TapCursor     → Animated cursor that "clicks" a button
+
+
+--------------------------------------------------------------
+8. COMMON RESOLUTIONS
+--------------------------------------------------------------
+
+  TikTok / Instagram Reels:  1080 x 1920  (vertical)
+  YouTube / LinkedIn:        1280 x 720   (horizontal)
+  Instagram Feed:            1080 x 1080  (square)
+
+
+--------------------------------------------------------------
+9. TROUBLESHOOTING
+--------------------------------------------------------------
+
+  "command not found: nvm":
+    → Install nvm first (see step 1a above)
+    → Restart your terminal after installing
+
+  "command not found: npm" or "command not found: node":
+    → Run: nvm install 22 && nvm use 22
+
+  "npm run dev" doesn't start:
+    → Make sure you ran npm install first
+    → Check Node version: node -v (need 22+)
+
+  Screenshots look stretched:
+    → Tell the agent to use objectFit: "contain" or "fill"
+
+  Text is behind the phone:
+    → Tell the agent to split into separate text + phone scenes
+
+  Video is too short/long:
+    → Tell the agent to adjust scene durations
+
+  Port 3003 is busy:
+    → Change port in remotion.config.ts (Config.setStudioPort)

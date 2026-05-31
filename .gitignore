@@ -2,6 +2,15 @@ node_modules
 dist
 .DS_Store
 .env
+package-lock.json
 
 # Ignore the output video from Git but not videos you import into src/.
 out
+
+# Ignore source files - each team member creates their own videos
+src/
+!src/.gitkeep
+
+# Ignore screenshots/assets used in videos
+public/
+!public/.gitkeep
