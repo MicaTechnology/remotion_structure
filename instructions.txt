@@ -86,7 +86,7 @@ screenshots. Here's a template you can adapt:
 
 The agent will:
   1. Copy your screenshots to public/
-  2. Create the video components in src/
+  2. Create the video component in src/videos/
   3. Register the composition in src/Root.tsx
 
 
@@ -140,7 +140,39 @@ hot-reloads so changes appear instantly.
 
 
 --------------------------------------------------------------
-7. HOW SCENES WORK (for advanced users)
+7. PROJECT STRUCTURE
+--------------------------------------------------------------
+
+  my-video/
+  ├── src/
+  │   ├── index.ts              ← Entry point (tracked in git)
+  │   ├── Root.tsx              ← Register compositions here (tracked)
+  │   ├── index.css             ← Tailwind entry (tracked)
+  │   ├── components/           ← Shared reusable components (tracked)
+  │   │   ├── PhoneFrame.tsx    ← Mobile device mockup
+  │   │   ├── BrowserFrame.tsx  ← Desktop browser mockup
+  │   │   └── TapCursor.tsx     ← Animated click effect
+  │   └── videos/               ← YOUR VIDEO FILES (gitignored)
+  │       └── MyFeatureVideo.tsx
+  ├── public/                   ← Screenshots & assets (gitignored)
+  ├── remotion.config.ts        ← Config (tracked)
+  └── package.json              ← Dependencies (tracked)
+
+  What's tracked (shared across team):
+    - Config files, shared components, entry point
+
+  What's gitignored (local to you):
+    - src/videos/  → your video source files
+    - public/      → your screenshots
+    - out/         → rendered video output
+
+  This means multiple people can work on different videos
+  without conflicts. The shared components (PhoneFrame,
+  BrowserFrame, etc.) are available to everyone.
+
+
+--------------------------------------------------------------
+8. HOW SCENES WORK (for advanced users)
 --------------------------------------------------------------
 
 Each video is a React component made of Sequences (scenes).
@@ -148,7 +180,7 @@ You don't need to write code, but understanding the structure
 helps when talking to the agent.
 
   COMPOSITION (Root.tsx)
-  └── Your video component
+  └── Your video component (in src/videos/)
       ├── Sequence (from=0, duration=90)     → Intro
       ├── Sequence (from=90, duration=45)    → Text: "Step 1"
       ├── Sequence (from=135, duration=105)  → Phone with screenshot
@@ -180,7 +212,7 @@ helps when talking to the agent.
 
 
 --------------------------------------------------------------
-8. COMMON RESOLUTIONS
+9. COMMON RESOLUTIONS
 --------------------------------------------------------------
 
   TikTok / Instagram Reels:  1080 x 1920  (vertical)
@@ -189,7 +221,7 @@ helps when talking to the agent.
 
 
 --------------------------------------------------------------
-9. TROUBLESHOOTING
+10. TROUBLESHOOTING
 --------------------------------------------------------------
 
   "command not found: nvm":

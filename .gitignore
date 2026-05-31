@@ -4,12 +4,12 @@ dist
 .env
 package-lock.json
 
-# Ignore the output video from Git but not videos you import into src/.
+# Ignore rendered output
 out
 
-# Ignore source files - each team member creates their own videos
-src/
-!src/.gitkeep
+# Ignore individual video files - each person creates their own
+src/videos/
+!src/videos/.gitkeep
 
 # Ignore screenshots/assets used in videos
 public/
